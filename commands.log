@@ -1,1 +1,84 @@
+Lab 2 — commands log
 
+A. DNS and network
+
+"nslookup example.com"
+Получены IPv4: 104.20.23.154, 172.66.147.243.
+
+"nslookup google.com"
+Получены IPv4 и IPv6 адреса.
+
+"nslookup github.com"
+Получен IPv4: 140.82.121.4.
+
+"ping -n 4 google.com"
+4 пакета получено, потерь 0%, среднее время 125 ms.
+
+"ping -n 4 github.com"
+4 пакета получено, потерь 0%, среднее время 121 ms.
+
+"tracert -d google.com"
+Маршрут завершён на 13-м переходе; некоторые промежуточные узлы не ответили.
+
+"tracert -d github.com"
+Маршрут завершён на 15-м переходе; некоторые промежуточные узлы не ответили.
+
+C. HTTP methods and status codes
+
+"curl.exe -i https://jsonplaceholder.typicode.com/posts/1"
+200 OK; JSON одного поста.
+
+"curl.exe -i "https://jsonplaceholder.typicode.com/posts?userId=1""
+200 OK; массив из 10 постов.
+
+"curl.exe -i https://jsonplaceholder.typicode.com/posts/9999"
+404 Not Found.
+
+"curl.exe -i -X POST https://jsonplaceholder.typicode.com/posts -H "Content-Type: application/json" -d "{\"title\":\"Test\",\"body\":\"Hello HTTP\",\"userId\":1}""
+201 Created; возвращён объект с id 101.
+
+"curl.exe -i -X PUT https://jsonplaceholder.typicode.com/posts/1 -H "Content-Type: application/json" -d "{\"id\":1,\"title\":\"Updated title\",\"body\":\"Updated body\",\"userId\":1}""
+200 OK.
+
+"curl.exe -i -X PATCH https://jsonplaceholder.typicode.com/posts/1 -H "Content-Type: application/json" -d "{\"title\":\"Patched title\"}""
+200 OK.
+
+"curl.exe -i -X DELETE https://jsonplaceholder.typicode.com/posts/1"
+200 OK.
+
+"curl.exe -i https://httpbin.org/redirect/1"
+302 FOUND; Location: /get.
+
+"curl.exe -i -L https://httpbin.org/redirect/1"
+302 FOUND, затем 200 OK.
+
+"curl.exe -i https://httpbin.org/status/418"
+418 I'M A TEAPOT.
+
+"curl.exe -i https://httpbin.org/status/500"
+500 INTERNAL SERVER ERROR.
+
+D. Cookies
+
+"curl.exe -i https://httpbin.org/cookies/set/lab2/test123"
+302 FOUND; Set-Cookie: lab2=test123; Path=/.
+
+"curl.exe -i -L -c cookies.txt -b cookies.txt https://httpbin.org/cookies/set/lab2/test123"
+302 FOUND, затем 200 OK. JSON подтвердил cookie lab2=test123.
+
+E. HTTPS and cache
+
+"curl.exe -I https://example.com"
+200 OK; присутствуют Last-Modified, Age и CF-Cache-Status: HIT.
+
+"curl.exe -vI https://example.com"
+HTTPS-соединение установлено на порт 443; ответ 200 OK. Подробные поля сертификата в выводе не отображались.
+
+B. DevTools
+
+Запрос к "https://api.github.com/repos/typicode/json-server":
+
+- GET, 200 OK (source: disk cache).
+- Content-Type: application/json; charset=utf-8.
+- Cache-Control: public, max-age=60, s-maxage=60.
+- После отключения кэша: 200 OK, Cache-Control: no-cache и Pragma: no-cache.
